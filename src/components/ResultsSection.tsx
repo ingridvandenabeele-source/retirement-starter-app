@@ -49,16 +49,19 @@ export const ResultsSection: React.FC<ResultsSectionProps> = ({ results }) => {
         <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Amount needed to match lifestyle</p>
       </div>
 
-      {/* Card 4: Years Covered */}
+      {/* Card 4: Portfolio / annual income need */}
       <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border-l-4 border-[#C9A227] dark:border-[#FBBF24] transition-colors duration-300">
         <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
-          Years of extra lifestyle covered
+          Portfolio / annual income need
         </h3>
         <p className="mt-2 text-3xl font-bold text-[#C9A227] dark:text-[#FBBF24] transition-colors">
-          {formatNumber(results.yearsCovered, 1)} years
+          {formatNumber(results.yearsCovered, 1)}×
         </p>
-        <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
-          Estimate based on capital depletion
+        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+          How many years of your target extra income your projected portfolio represents at retirement.
+        </p>
+        <p className="text-[11px] text-gray-400 dark:text-gray-500 mt-1">
+          This is a simple ratio. It does not model investment returns or withdrawals after retirement.
         </p>
       </div>
 

@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { InputSection } from './components/InputSection';
 import { ResultsSection } from './components/ResultsSection';
 import { ChartSection } from './components/ChartSection';
-import { calculateRetirementData } from './services/financeService';
+import { calculateRetirementData, formatCurrency, formatNumber } from './services/financeService';
 import { UserInputs } from './types';
 import { DEFAULT_INPUTS, COLORS } from './constants';
 
@@ -35,23 +35,31 @@ const App: React.FC = () => {
       {/* Header */}
       <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex items-start gap-3">
                {/* Simple Logo Icon */}
-               <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-[#2E3A59] dark:bg-blue-600 transition-colors">
+               <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-[#2E3A59] dark:bg-blue-600 transition-colors shrink-0 mt-1">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                   </svg>
                </div>
-               <h1 className="text-xl md:text-2xl font-bold text-[#2E3A59] dark:text-gray-100 transition-colors">
-                 Retirement Starter
-               </h1>
+               <div>
+                 <h1 className="text-xl md:text-2xl font-bold text-[#2E3A59] dark:text-gray-100 transition-colors">
+                   Retirement Starter
+                 </h1>
+                 <p className="mt-1 text-base md:text-lg font-medium text-[#2E3A59] dark:text-gray-200">
+                   Will your investments be enough to provide the extra retirement income you want?
+                 </p>
+                 <p className="mt-0.5 text-xs md:text-sm text-gray-500 dark:text-gray-400">
+                   See how investment growth, inflation and your retirement age could affect your future income.
+                 </p>
+               </div>
             </div>
 
             {/* Dark Mode Toggle */}
             <button
               onClick={() => setIsDarkMode(!isDarkMode)}
-              className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-gray-600 dark:text-gray-300"
+              className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-gray-600 dark:text-gray-300 shrink-0"
               aria-label="Toggle Dark Mode"
             >
               {isDarkMode ? (
@@ -85,6 +93,54 @@ const App: React.FC = () => {
             {/* Results Grid */}
             <ResultsSection results={results} />
 
+            {/* Your Retirement Snapshot */}
+            <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 transition-colors duration-300">
+              <h3 className="text-base font-semibold text-[#2E3A59] dark:text-blue-100 mb-2">
+                Your Retirement Snapshot
+              </h3>
+              <div className="text-sm text-gray-700 dark:text-gray-300 space-y-1.5 leading-relaxed">
+                <p>
+                  At age <strong className="text-gray-900 dark:text-white font-semibold">{inputs.retirementAge}</strong>, your projected portfolio is approximately <strong className="text-gray-900 dark:text-white font-semibold">{formatCurrency(results.realFinal)}</strong> in today’s money.
+                </p>
+                <p>
+                  Your target is <strong className="text-gray-900 dark:text-white font-semibold">{formatCurrency(results.requiredIncomeRetirement)}</strong> per year of extra retirement income.
+                </p>
+                <p>
+                  This projected portfolio represents approximately <strong className="text-[#C9A227] dark:text-[#FBBF24] font-semibold">{formatNumber(results.yearsCovered, 1)}×</strong> your target annual extra income at retirement.
+                </p>
+              </div>
+            </div>
+
+            {/* How this calculator works (Expandable) */}
+            <details className="group bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 transition-colors duration-300 overflow-hidden">
+              <summary className="p-4 flex items-center justify-between cursor-pointer list-none select-none text-sm font-medium text-[#2E3A59] dark:text-gray-200 hover:bg-gray-50/50 dark:hover:bg-gray-750 transition-colors">
+                <span>How this calculator works</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4 text-gray-400 group-open:rotate-180 transition-transform duration-200 shrink-0 ml-2"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </summary>
+              <div className="px-4 pb-4 pt-1 border-t border-gray-50 dark:border-gray-700/60 text-sm text-gray-600 dark:text-gray-300 space-y-2.5 leading-relaxed">
+                <p>
+                  This calculator provides an illustrative projection based on the assumptions you enter.
+                </p>
+                <p>
+                  Your existing portfolio is projected forward using your expected annual return. Monthly contributions are simplified into one annual contribution and added at the end of each year.
+                </p>
+                <p>
+                  Inflation is used to show what your projected portfolio could be worth in today’s purchasing power.
+                </p>
+                <p>
+                  Actual investment returns and inflation will vary, so these results are estimates rather than predictions.
+                </p>
+              </div>
+            </details>
+
             {/* Explanation Block */}
             <div className="bg-blue-50 dark:bg-gray-800 p-6 rounded-xl border border-blue-100 dark:border-gray-700 transition-colors duration-300">
               <h4 className="font-semibold mb-3 text-sm uppercase tracking-wide text-[#2E3A59] dark:text-blue-300 transition-colors">
@@ -104,14 +160,14 @@ const App: React.FC = () => {
                     <strong className="text-gray-900 dark:text-white">Required extra income</strong> – This is how much extra money you would need per year in retirement to match your desired lifestyle, adjusted for inflation.
                   </p>
                   <p>
-                    <strong className="text-gray-900 dark:text-white">Years of extra lifestyle covered</strong> – This estimates how many years that extra lifestyle could be funded by your portfolio. It is not a full retirement plan, just a simple illustration.
+                    <strong className="text-gray-900 dark:text-white">Portfolio / annual income need</strong> – How many years of your target extra income your projected portfolio represents at retirement. This is a simple ratio and does not model investment returns or withdrawals after retirement.
                   </p>
                 </div>
               </div>
               
               <div className="mt-4 pt-4 border-t border-blue-200 dark:border-gray-700">
                 <p className="text-xs text-slate-600 dark:text-gray-400">
-                  <strong>Note:</strong> Even if your portfolio grows, your future lifestyle gets more expensive. Sometimes your yearly cost grows faster than your investments, so the years of coverage can go down when you wait longer.
+                  <strong>Note:</strong> Even if your portfolio grows, your future lifestyle gets more expensive. Sometimes your yearly cost grows faster than your investments, so the ratio can go down when you wait longer.
                 </p>
               </div>
             </div>
