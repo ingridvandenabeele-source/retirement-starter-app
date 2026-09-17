@@ -32,26 +32,29 @@ export const calculateRetirementData = (inputs: UserInputs): CalculationResults 
     realBalance: currentNominal / currentCPI, // P0 / 1
   });
 
-  // 4.1 Year-by-year projection
-  for (let t = 1; t <= yearsUntilRetirement; t++) {
-    // Nominal_Balance[t] = (Nominal_Balance[t-1] + C * 12) * (1 + r)
-    // Note: Contributions are added throughout the year, then growth is applied. 
-    // This is a simplified compounding model often used in these basic sheets.
-    currentNominal = (currentNominal + (monthlyContribution * 12)) * (1 + r);
-    
-    // CPI_Index[t] = CPI_Index[t-1] * (1 + i)
-    currentCPI = currentCPI * (1 + i);
-    
-    // Real_Balance[t] = Nominal_Balance[t] / CPI_Index[t]
-    const realBalance = currentNominal / currentCPI;
+// 4.1 Year-by-year projection
+const monthlyRate = Math.pow(1 + r, 1 / 12) - 1;
 
-    chartData.push({
-      yearIndex: t,
-      age: currentAge + t,
-      nominalBalance: currentNominal,
-      realBalance: realBalance,
-    });
+for (let t = 1; t <= yearsUntilRetirement; t++) {
+  // Apply monthly growth and add the monthly contribution
+  for (let month = 0; month < 12; month++) {
+    currentNominal = currentNominal * (1 + monthlyRate);
+    currentNominal += monthlyContribution;
   }
+
+  // CPI_Index[t] = CPI_Index[t-1] * (1 + i)
+  currentCPI = currentCPI * (1 + i);
+
+  // Real_Balance[t] = Nominal_Balance[t] / CPI_Index[t]
+  const realBalance = currentNominal / currentCPI;
+
+  chartData.push({
+    yearIndex: t,
+    age: currentAge + t,
+    nominalBalance: currentNominal,
+    realBalance: realBalance,
+  });
+}
 
   // 4.2 Key outputs at retirement (year N)
   const finalYearData = chartData[chartData.length - 1];
