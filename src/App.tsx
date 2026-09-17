@@ -130,7 +130,7 @@ const App: React.FC = () => {
                   This calculator provides an illustrative projection based on the assumptions you enter.
                 </p>
                 <p>
-                  Your existing portfolio is projected forward using your expected annual return. Monthly contributions are simplified into one annual contribution and added at the end of each year.
+                  Your existing portfolio is projected forward using your expected annual return. Monthly contributions are assumed to continue from your current age until your planned retirement age and are added monthly. Your expected annual return is converted into an equivalent monthly growth rate for the calculation.
                 </p>
                 <p>
                   Inflation is used to show what your projected portfolio could be worth in today’s purchasing power.
